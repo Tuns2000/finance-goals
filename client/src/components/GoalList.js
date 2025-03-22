@@ -1,15 +1,21 @@
 // src/components/GoalList.js
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import { getGoals } from '../api/goalApi';  // Импортируем API
 
 const GoalList = () => {
   const [goals, setGoals] = useState([]);
 
   useEffect(() => {
-    // Получаем цели с бэкенда
-    axios.get('http://localhost:3000/goals')
-      .then(response => setGoals(response.data))
-      .catch(error => console.error('There was an error!', error));
+    const fetchGoals = async () => {
+      try {
+        const data = await getGoals();
+        setGoals(data);
+      } catch (error) {
+        console.error("Error fetching goals:", error);
+      }
+    };
+
+    fetchGoals();
   }, []);
 
   return (
