@@ -1,6 +1,6 @@
 // src/components/GoalList.js
 import React, { useEffect, useState } from 'react';
-import { getGoals } from '../api/goalApi';  // Импортируем API
+import { getGoals } from '../../api/goalApi';  // Импортируем API
 
 const GoalList = () => {
   const [goals, setGoals] = useState([]);
