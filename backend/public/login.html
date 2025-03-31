@@ -4,22 +4,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Авторизация</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .input-group {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #4a5568;
+        }
+        input:focus + .input-icon {
+            color: #667eea;
+        }
+        .shake {
+            animation: shake 0.5s;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+    </style>
 </head>
-<body>
-    <h1>Добро пожаловать в Finance Goals</h1>
+<body class="gradient-bg min-h-screen flex items-center justify-center">
+    <div class="bg-white rounded-2xl shadow-2xl p-8 w-96 animate__animated animate__fadeInUp">
+        <h1 class="text-3xl font-bold text-center mb-6 bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
+            Finance Goals
+        </h1>
 
-    <h2>Авторизация</h2>
-    <form id="login-form">
-        <input type="email" id="login-email" placeholder="Email" required><br>
-        <input type="password" id="login-password" placeholder="Пароль" required><br>
-        <button type="submit">Войти</button>
-    </form>
+        <h2 class="text-2xl text-center text-gray-800 mb-8">С возвращением!</h2>
+        
+        <form id="login-form" class="space-y-6">
+            <div class="input-group">
+                <i class="input-icon fas fa-envelope"></i>
+                <input type="email" id="login-email" 
+                       class="w-full pl-12 pr-4 py-3 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:outline-none transition-all"
+                       placeholder="Email" required>
+            </div>
 
-    <p>Еще нет аккаунта? <button id="go-to-register">Зарегистрироваться</button></p>
+            <div class="input-group">
+                <i class="input-icon fas fa-lock"></i>
+                <input type="password" id="login-password" 
+                       class="w-full pl-12 pr-4 py-3 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:outline-none transition-all"
+                       placeholder="Пароль" required>
+            </div>
 
+            <button type="submit" 
+                    class="w-full bg-gradient-to-r from-purple-600 to-blue-500 text-white py-3 rounded-lg font-semibold 
+                           hover:from-purple-700 hover:to-blue-600 transition-all transform hover:scale-105 shadow-lg">
+                Войти
+            </button>
+        </form>
+
+        <p class="text-center mt-6 text-gray-600">
+            Еще нет аккаунта? 
+            <button id="go-to-register" class="text-purple-600 font-semibold hover:underline focus:outline-none">
+                Зарегистрироваться
+            </button>
+        </p>
+    </div>
+
+    <!-- Оригинальный скрипт без изменений -->
     <script>
         document.getElementById('go-to-register').addEventListener('click', () => {
-            window.location.href = 'register.html'; // Переход на страницу регистрации
+            window.location.href = 'register.html';
         });
 
         document.getElementById('login-form').addEventListener('submit', async function(event) {
@@ -40,9 +101,13 @@
             console.log(data);
             if (response.ok) {
                 alert('Вход успешен!');
-                localStorage.setItem('token', data.token); // Сохраняем токен в localStorage
+                localStorage.setItem('token', data.token);
             } else {
                 alert('Ошибка входа');
+                document.getElementById('login-form').classList.add('shake');
+                setTimeout(() => {
+                    document.getElementById('login-form').classList.remove('shake');
+                }, 500);
             }
         });
     </script>
