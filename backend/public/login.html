@@ -4,81 +4,117 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Авторизация</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Animate.css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         .gradient-bg {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
-        .input-group {
-            position: relative;
-            margin-bottom: 2rem;
+        .notification {
+            position: fixed;
+            top: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 1rem 2rem;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            z-index: 100;
+            animation: slideIn 0.3s ease-out forwards;
         }
-        .input-icon {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #4a5568;
+        @keyframes slideIn {
+            0% { top: -100px; opacity: 0; }
+            100% { top: 2rem; opacity: 1; }
         }
-        input:focus + .input-icon {
-            color: #667eea;
-        }
-        .shake {
-            animation: shake 0.5s;
-        }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
+        @keyframes slideOut {
+            0% { top: 2rem; opacity: 1; }
+            100% { top: -100px; opacity: 0; }
         }
     </style>
 </head>
 <body class="gradient-bg min-h-screen flex items-center justify-center">
-    <div class="bg-white rounded-2xl shadow-2xl p-8 w-96 animate__animated animate__fadeInUp">
-        <h1 class="text-3xl font-bold text-center mb-6 bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
+    <div class="bg-white rounded-2xl shadow-2xl p-8 w-96 animate__animated animate__fadeInUp relative">
+        <div class="absolute -top-8 left-1/2 -translate-x-1/2">
+            <div class="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center shadow-lg">
+                <i class="fas fa-key text-3xl text-white"></i>
+            </div>
+        </div>
+
+        <h1 class="text-3xl font-bold text-center mt-8 mb-6 bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
             Finance Goals
         </h1>
 
-        <h2 class="text-2xl text-center text-gray-800 mb-8">С возвращением!</h2>
-        
         <form id="login-form" class="space-y-6">
-            <div class="input-group">
-                <i class="input-icon fas fa-envelope"></i>
+            <div class="relative">
+                <i class="fas fa-envelope absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
                 <input type="email" id="login-email" 
-                       class="w-full pl-12 pr-4 py-3 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:outline-none transition-all"
+                       class="w-full pl-10 pr-4 py-3 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:outline-none transition-all"
                        placeholder="Email" required>
             </div>
 
-            <div class="input-group">
-                <i class="input-icon fas fa-lock"></i>
+            <div class="relative">
+                <i class="fas fa-lock absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
                 <input type="password" id="login-password" 
-                       class="w-full pl-12 pr-4 py-3 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:outline-none transition-all"
+                       class="w-full pl-10 pr-4 py-3 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:outline-none transition-all"
                        placeholder="Пароль" required>
             </div>
 
             <button type="submit" 
                     class="w-full bg-gradient-to-r from-purple-600 to-blue-500 text-white py-3 rounded-lg font-semibold 
                            hover:from-purple-700 hover:to-blue-600 transition-all transform hover:scale-105 shadow-lg">
-                Войти
+                Войти в систему
             </button>
         </form>
 
         <p class="text-center mt-6 text-gray-600">
-            Еще нет аккаунта? 
+            Новый пользователь? 
             <button id="go-to-register" class="text-purple-600 font-semibold hover:underline focus:outline-none">
-                Зарегистрироваться
+                Создать аккаунт
             </button>
         </p>
     </div>
 
-    <!-- Оригинальный скрипт без изменений -->
     <script>
+        let currentNotification = null;
+
+        function showNotification(message, type = 'success') {
+            if(currentNotification) {
+                currentNotification.remove();
+            }
+            
+            const colors = {
+                success: 'bg-green-500 text-white',
+                error: 'bg-red-500 text-white'
+            }
+            
+            const icon = {
+                success: '🔓',
+                error: '⚠️'
+            }
+            
+            const notification = document.createElement('div');
+            notification.className = `notification ${colors[type]}`;
+            notification.innerHTML = `
+                <span class="text-xl">${icon[type]}</span>
+                ${message}
+            `;
+            
+            document.body.appendChild(notification);
+            currentNotification = notification;
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-out forwards';
+                setTimeout(() => {
+                    notification.remove();
+                    currentNotification = null;
+                }, 300);
+            }, 3000);
+        }
+
         document.getElementById('go-to-register').addEventListener('click', () => {
             window.location.href = 'register.html';
         });
@@ -89,25 +125,38 @@
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
 
-            const response = await fetch('http://localhost:5000/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ email, password })
-            });
+            try {
+                const response = await fetch('http://localhost:5000/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
 
-            const data = await response.json();
-            console.log(data);
-            if (response.ok) {
-                alert('Вход успешен!');
-                localStorage.setItem('token', data.token);
-            } else {
-                alert('Ошибка входа');
-                document.getElementById('login-form').classList.add('shake');
-                setTimeout(() => {
-                    document.getElementById('login-form').classList.remove('shake');
-                }, 500);
+                const data = await response.json();
+                
+                // Форматированный вывод в консоль
+                console.log('%c=== Ответ сервера ===', 
+                    'color: #4CAF50; font-weight: bold; font-size: 14px');
+                console.log({
+                    message: data.message || 'Сообщение отсутствует',
+                    token: data.token ? `${data.token.slice(0, 20)}...` : 'Токен не получен',
+                    status: response.status,
+                    ok: response.ok
+                });
+                console.log('%c=====================', 
+                    'color: #4CAF50; font-weight: bold; font-size: 14px');
+
+                if (response.ok) {
+                    showNotification('Добро пожаловать!', 'success');
+                    localStorage.setItem('token', data.token);
+                } else {
+                    showNotification(data.message || 'Пользователь не найден', 'error');
+                    this.classList.add('animate__animated', 'animate__shakeX');
+                    setTimeout(() => this.classList.remove('animate__animated', 'animate__shakeX'), 1000);
+                }
+            } catch (error) {
+                showNotification('Ошибка соединения', 'error');
+                console.error('%cОшибка запроса:', 'color: red; font-weight: bold', error);
             }
         });
     </script>
