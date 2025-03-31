@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Goals</title>
+</head>
+<body>
+    <h1>Добро пожаловать в Finance Goals</h1>
+
+    <h2>Регистрация</h2>
+    <form id="register-form">
+        <input type="text" id="register-username" placeholder="Имя пользователя" required><br>
+        <input type="email" id="register-email" placeholder="Email" required><br>
+        <input type="password" id="register-password" placeholder="Пароль" required><br>
+        <button type="submit">Зарегистрироваться</button>
+    </form>
+
+    <h2>Авторизация</h2>
+    <form id="login-form">
+        <input type="email" id="login-email" placeholder="Email" required><br>
+        <input type="password" id="login-password" placeholder="Пароль" required><br>
+        <button type="submit">Войти</button>
+    </form>
+
+    <script>
+        // Обработчик для формы регистрации
+        document.getElementById('register-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const username = document.getElementById('register-username').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+
+            const response = await fetch('http://localhost:5000/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, email, password })
+            });
+
+            const data = await response.json();
+            console.log(data);
+            if (response.ok) {
+                alert('Регистрация успешна!');
+            } else {
+                alert('Ошибка регистрации');
+            }
+        });
+
+        // Обработчик для формы авторизации
+        document.getElementById('login-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            const response = await fetch('http://localhost:5000/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await response.json();
+            console.log(data);
+            if (response.ok) {
+                alert('Вход успешен!');
+                localStorage.setItem('token', data.token); // Сохраняем токен в localStorage
+            } else {
+                alert('Ошибка входа');
+            }
+        });
+    </script>
+</body>
+</html>
